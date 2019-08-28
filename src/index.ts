@@ -41,4 +41,9 @@ export default class XsIO {
         }
         return rp(trueOptions);
     }
+    public static async wait(t: number): Promise<undefined>{
+        return new Promise((res,rej) => {
+            setTimeout(res, t);
+        });
+    }
 }
