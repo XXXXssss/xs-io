@@ -14,8 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __importDefault(require("./index"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        let xio = new index_1.default();
-        yield xio.write('./test.txt', "Hello World!");
+        yield index_1.default.write('./test.txt', "Hello World!");
     });
 }
 main();

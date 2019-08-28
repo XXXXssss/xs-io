@@ -20,22 +20,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const request_promise_native_1 = __importDefault(require("request-promise-native"));
 const fp = __importStar(require("./lib/fs-promise"));
-const defaultHttpReadOption = {
-    method: 'GET'
-};
 class XsIO {
-    constructor(arg) {
-        this.Arg = {};
-        if (arg) {
-            this.Arg.httpReadMethod = arg.httpReadMethod || 'GET';
-            this.Arg.httpWriteMethod = arg.httpWriteMethod || 'POST';
-        }
-    }
-    read(path, options) {
+    static read(path, options) {
         return __awaiter(this, void 0, void 0, function* () {
             if (path.startsWith('http://') || path.startsWith('https://')) {
                 let trueOptions = Object.assign({}, {
-                    method: this.Arg.httpReadMethod,
+                    method: 'GET',
                     url: path
                 });
                 if (options) {
@@ -53,27 +43,27 @@ class XsIO {
             }
         });
     }
-    write(path, data, options) {
+    static write(path, data, options) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (path.startsWith('http://') || path.startsWith('https://')) {
-                let trueOptions = Object.assign({}, {
-                    method: this.Arg.httpWriteMethod,
-                    url: path,
-                    body: data
-                });
-                if (options) {
-                    trueOptions = Object.assign(trueOptions, options);
-                }
-                return request_promise_native_1.default(trueOptions);
+            if (options) {
+                return fp.writeFile(path, data, options);
             }
             else {
-                if (options) {
-                    return fp.writeFile(path, data, options);
-                }
-                else {
-                    return fp.writeFile(path, data);
-                }
+                return fp.writeFile(path, data);
             }
+        });
+    }
+    static post(path, data, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let trueOptions = Object.assign({}, {
+                method: 'POST',
+                url: path,
+                body: data
+            });
+            if (options) {
+                trueOptions = Object.assign(trueOptions, options);
+            }
+            return request_promise_native_1.default(trueOptions);
         });
     }
 }
