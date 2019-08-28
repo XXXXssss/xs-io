@@ -1,14 +1,6 @@
 import rp from 'request-promise-native';
 import * as fp from './lib/fs-promise';
 
-interface requestOptions{
-    method: string;
-}
-
-const defaultHttpReadOption: requestOptions = {
-    method:'GET'
-}
-
 export interface IXsIoConfig{
     fileReadOption?: any,
     httpReadMethod?: string,
@@ -44,25 +36,23 @@ export default class XsIO {
             }
         }
     }
-    public async write(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse|undefined>{
-        if(path.startsWith('http://') || path.startsWith('https://')){
-            let trueOptions: rp.Options = Object.assign({}, {
-                method:this.Arg.httpWriteMethod,
-                url: path,
-                body: data
-            });
-            if(options){
-                trueOptions = Object.assign(trueOptions,options);
-            }
-            return rp(trueOptions);
+    public async write(path: string,data: Buffer|string|Object, options?: Object): Promise<undefined>{
+        if(options){
+            return fp.writeFile(path, data, options);
         }
         else{
-            if(options){
-                return fp.writeFile(path, data, options);
-            }
-            else{
-                return fp.writeFile(path, data);
-            }
+            return fp.writeFile(path, data);
         }
+    }
+    public async post(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse>{
+        let trueOptions: rp.Options = Object.assign({}, {
+            method:this.Arg.httpWriteMethod,
+            url: path,
+            body: data
+        });
+        if(options){
+            trueOptions = Object.assign(trueOptions,options);
+        }
+        return rp(trueOptions);
     }
 }
