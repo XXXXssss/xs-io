@@ -1,5 +1,5 @@
-import fs from 'fs';
 import rp from 'request-promise-native';
+import * as fp from './lib/fs-promise';
 
 interface requestOptions{
     method: string;
@@ -11,8 +11,8 @@ const defaultHttpReadOption: requestOptions = {
 
 export interface IXsIoConfig{
     fileReadOption?: any,
-    httpReadOption?: requestOptions,
-    httpWriteOption?: requestOptions
+    httpReadMethod?: string,
+    httpWriteMethod?: string
 }
 
 export default class XsIO {
@@ -20,28 +20,49 @@ export default class XsIO {
     constructor(arg?: IXsIoConfig){
         this.Arg = {};
         if(arg){
-            this.Arg.httpReadOption = arg.httpReadOption || defaultHttpReadOption;
+            this.Arg.httpReadMethod = arg.httpReadMethod || 'GET';
+            this.Arg.httpWriteMethod = arg.httpWriteMethod || 'POST';
         }
     }
-    private async readFile(path: string): Promise<Buffer>{
-        return new Promise((resolve,reject) => {
-            fs.readFile(path,(err, data) => {
-                if(err) {
-                    reject(err);
-                }
-                else {
-                    resolve(data);
-                }
-            });
-        });
-    }
-    public async read(path: string): Promise<Buffer>{
+    public async read(path: string, options?: Object): Promise<Buffer>{
         if(path.startsWith('http://') || path.startsWith('https://')){
-            let options: rp.Options = Object.assign({}, this.Arg.httpReadOption, {url: path});
-            return rp.get(options);
+            let trueOptions: rp.Options = Object.assign({}, {
+                method:this.Arg.httpReadMethod,
+                url: path
+            });
+            if(options){
+                trueOptions = Object.assign(trueOptions,options);
+            }
+            return rp(trueOptions);
         }
         else{
-            return this.readFile(path);
+            if(options){
+                return fp.readFile(path, options);
+            }
+            else{
+                return fp.readFile(path);
+            }
+        }
+    }
+    public async write(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse|undefined>{
+        if(path.startsWith('http://') || path.startsWith('https://')){
+            let trueOptions: rp.Options = Object.assign({}, {
+                method:this.Arg.httpWriteMethod,
+                url: path,
+                body: data
+            });
+            if(options){
+                trueOptions = Object.assign(trueOptions,options);
+            }
+            return rp(trueOptions);
+        }
+        else{
+            if(options){
+                return fp.writeFile(path, data, options);
+            }
+            else{
+                return fp.writeFile(path, data);
+            }
         }
     }
 }

@@ -10,9 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = __importDefault(require("fs"));
 const request_promise_native_1 = __importDefault(require("request-promise-native"));
+const fp = __importStar(require("./lib/fs-promise"));
 const defaultHttpReadOption = {
     method: 'GET'
 };
@@ -20,31 +27,52 @@ class XsIO {
     constructor(arg) {
         this.Arg = {};
         if (arg) {
-            this.Arg.httpReadOption = arg.httpReadOption || defaultHttpReadOption;
+            this.Arg.httpReadMethod = arg.httpReadMethod || 'GET';
+            this.Arg.httpWriteMethod = arg.httpWriteMethod || 'POST';
         }
     }
-    readFile(path) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                fs_1.default.readFile(path, (err, data) => {
-                    if (err) {
-                        reject(err);
-                    }
-                    else {
-                        resolve(data);
-                    }
-                });
-            });
-        });
-    }
-    read(path) {
+    read(path, options) {
         return __awaiter(this, void 0, void 0, function* () {
             if (path.startsWith('http://') || path.startsWith('https://')) {
-                let options = Object.assign({}, this.Arg.httpReadOption, { url: path });
-                return request_promise_native_1.default.get(options);
+                let trueOptions = Object.assign({}, {
+                    method: this.Arg.httpReadMethod,
+                    url: path
+                });
+                if (options) {
+                    trueOptions = Object.assign(trueOptions, options);
+                }
+                return request_promise_native_1.default(trueOptions);
             }
             else {
-                return this.readFile(path);
+                if (options) {
+                    return fp.readFile(path, options);
+                }
+                else {
+                    return fp.readFile(path);
+                }
+            }
+        });
+    }
+    write(path, data, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+                let trueOptions = Object.assign({}, {
+                    method: this.Arg.httpWriteMethod,
+                    url: path,
+                    body: data
+                });
+                if (options) {
+                    trueOptions = Object.assign(trueOptions, options);
+                }
+                return request_promise_native_1.default(trueOptions);
+            }
+            else {
+                if (options) {
+                    return fp.writeFile(path, data, options);
+                }
+                else {
+                    return fp.writeFile(path, data);
+                }
             }
         });
     }

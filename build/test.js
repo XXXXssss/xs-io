@@ -14,8 +14,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = __importDefault(require("./index"));
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        let xio = new index_1.default(), res = (yield xio.read('http://www.zl-studio.cn')).toString();
-        console.log(res);
+        let xio = new index_1.default();
+        yield xio.write('./test.txt', "Hello World!");
     });
 }
 main();
