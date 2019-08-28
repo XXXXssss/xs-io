@@ -1,3 +1,9 @@
+# build output
+build/
+
+#test script
+src/test.ts
+
 # Logs
 logs
 *.log
@@ -59,9 +65,3 @@ typings/
 
 # next.js build output
 .next
-
-# build output
-build/
-
-#test script
-src/test.ts
