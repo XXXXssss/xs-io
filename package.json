@@ -1,12 +1,12 @@
 {
   "name": "xs-io",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "",
   "main": "./build/index.js",
   "scripts": {
-    "prepare":"npm run rebuild",
-    "build":"tsc -p",
-    "rebuild":"npm run clean && npm run build",
+    "prepare": "npm run rebuild",
+    "build": "tsc -p",
+    "rebuild": "npm run clean && npm run build",
     "start": "tsc && node ./build/test.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,8 +20,7 @@
     "url": "https://github.com/XXXXssss/xs-io/issues"
   },
   "homepage": "https://github.com/XXXXssss/xs-io#readme",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "types": "./build/index.d.ts",
   "typings": "./build/index.d.ts",
   "dependencies": {
