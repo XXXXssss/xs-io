@@ -1,25 +1,11 @@
 import rp from 'request-promise-native';
 import * as fp from './lib/fs-promise';
 
-export interface IXsIoConfig{
-    fileReadOption?: any,
-    httpReadMethod?: string,
-    httpWriteMethod?: string
-}
-
 export default class XsIO {
-    private Arg: IXsIoConfig;
-    constructor(arg?: IXsIoConfig){
-        this.Arg = {};
-        if(arg){
-            this.Arg.httpReadMethod = arg.httpReadMethod || 'GET';
-            this.Arg.httpWriteMethod = arg.httpWriteMethod || 'POST';
-        }
-    }
-    public async read(path: string, options?: Object): Promise<Buffer>{
+    public static async read(path: string, options?: Object): Promise<Buffer>{
         if(path.startsWith('http://') || path.startsWith('https://')){
             let trueOptions: rp.Options = Object.assign({}, {
-                method:this.Arg.httpReadMethod,
+                method:'GET',
                 url: path
             });
             if(options){
@@ -36,7 +22,7 @@ export default class XsIO {
             }
         }
     }
-    public async write(path: string,data: Buffer|string|Object, options?: Object): Promise<undefined>{
+    public static async write(path: string,data: Buffer|string|Object, options?: Object): Promise<undefined>{
         if(options){
             return fp.writeFile(path, data, options);
         }
@@ -44,9 +30,9 @@ export default class XsIO {
             return fp.writeFile(path, data);
         }
     }
-    public async post(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse>{
+    public static async post(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse>{
         let trueOptions: rp.Options = Object.assign({}, {
-            method:this.Arg.httpWriteMethod,
+            method:'POST',
             url: path,
             body: data
         });
