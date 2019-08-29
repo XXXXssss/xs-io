@@ -30,7 +30,7 @@ export default class XsIO {
             return fp.writeFile(path, data);
         }
     }
-    public static async post(path: string,data: string|Object, options?: Object): Promise<rp.FullResponse>{
+    public static async post(path: string,data: string|Object, options?: Object): Promise<string>{
         let trueOptions: rp.Options = Object.assign({}, {
             method:'POST',
             url: path,
