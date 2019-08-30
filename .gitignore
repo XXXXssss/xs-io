@@ -4,6 +4,8 @@ build/
 #test script
 src/test.ts
 
+build.sh
+
 # Logs
 logs
 *.log
