@@ -41,6 +41,19 @@ export default class XsIO {
         }
         return rp(trueOptions);
     }
+    public static readDir(path: string): Promise<string[]>{
+        return fp.readDir(path);
+    }
+    public static async get(path: string, options?: Object): Promise<string>{
+        let trueOptions: rp.Options = Object.assign({}, {
+            method:'GET',
+            url: path
+        });
+        if(options){
+            trueOptions = Object.assign(trueOptions,options);
+        }
+        return rp(trueOptions);
+    }
     public static async wait(t: number): Promise<undefined>{
         return new Promise((res,rej) => {
             setTimeout(res, t);
