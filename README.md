@@ -1,7 +1,3 @@
 # xs-io
 
-Use the same method to read and write all stream (such as file,http/https,ftp...) 
-
-## http/https
-read = get
-write = post
+Use the one module to read and write all stream (such as file,http/https,ftp...) 
